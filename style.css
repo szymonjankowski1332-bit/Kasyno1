@@ -1,1 +1,72 @@
+body{
+margin:0;
+font-family:Segoe UI;
+background:#0b0b0b;
+color:white;
+text-align:center;
+}
 
+header{
+padding:20px;
+font-size:28px;
+color:gold;
+border-bottom:1px solid #333;
+}
+
+.screen{display:none;}
+.active{display:block;padding:20px;}
+
+.games{
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.card{
+background:#111;
+padding:25px;
+border-radius:15px;
+width:220px;
+cursor:pointer;
+transition:.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px gold;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
+}
+
+.balance{color:gold;margin:10px;}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(12,50px);
+gap:5px;
+justify-content:center;
+margin-top:20px;
+}
+
+.cell{
+padding:12px;
+border-radius:5px;
+cursor:pointer;
+font-size:12px;
+}
+
+.red{background:#a00;}
+.black{background:#111;border:1px solid #555;}
+.green{background:green;}
+
+.slot{
+font-size:50px;
+margin:20px;
+}
