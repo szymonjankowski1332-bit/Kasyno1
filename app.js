@@ -26,3 +26,25 @@ if(name==="roulette") loadRoulette();
 if(name==="slots") loadSlots();
 if(name==="aviator") loadAviator();
 }
+function openAdmin(){
+let pass=prompt("Hasło admina:");
+
+if(pass==="admin123"){
+show("admin");
+}else{
+alert("Błędne hasło");
+}
+}
+
+function addMoney(){
+let u=document.getElementById("targetUser").value;
+let a=parseInt(document.getElementById("amount").value);
+
+if(!users[u]) users[u]=0;
+
+users[u]+=a;
+
+document.getElementById("adminMsg").innerText="Dodano "+a+" zł dla "+u;
+
+localStorage.setItem("users",JSON.stringify(users));
+}
