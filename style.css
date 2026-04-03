@@ -150,3 +150,32 @@ top:-10px;
 left:50%;
 transform:translateX(-50%);
 }
+/* SLOT MACHINE */
+
+.slot-machine{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:20px;
+}
+
+.reel{
+width:80px;
+height:120px;
+overflow:hidden;
+background:#111;
+border:2px solid gold;
+border-radius:10px;
+}
+
+.strip{
+transition:transform 0.2s;
+}
+
+.symbol{
+height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+}
