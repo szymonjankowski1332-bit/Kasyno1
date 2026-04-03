@@ -2,6 +2,27 @@ function loadAviator(){
 let el=document.getElementById("gameScreen");
 
 el.innerHTML=`
+<h2>✈️ Aviator</h2>
+
+<div>Saldo: <span id="bal"></span> zł</div>
+
+<div id="aviatorBox">
+  <canvas id="chart" width="300" height="150"></canvas>
+  <div id="plane">✈️</div>
+</div>
+
+<p>x<span id="multi">1.00</span></p>
+
+<button onclick="startAviator()">Start</button>
+<button onclick="cashout()">Cashout</button>
+<button onclick="show('lobby')">⬅️</button>
+`;
+
+updateBalance();
+}
+let el=document.getElementById("gameScreen");
+
+el.innerHTML=`
 <h2>✈️ Aviator REAL</h2>
 
 <div>Saldo: <span id="bal"></span> zł</div>
