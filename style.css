@@ -69,3 +69,84 @@ justify-content:center;
 margin:auto;
 margin-top:2px;
 }
+/* KONTAINER KOŁA */
+#wheel-container{
+position:relative;
+width:260px;
+height:260px;
+margin:20px auto;
+}
+
+/* KOŁO */
+#wheel{
+width:100%;
+height:100%;
+border-radius:50%;
+border:6px solid gold;
+position:absolute;
+transition:transform 4s ease-out;
+
+/* PRAWDZIWE SEGMENTY */
+background:conic-gradient(
+green 0deg 9.7deg,
+red 9.7deg 19.4deg,
+black 19.4deg 29.1deg,
+red 29.1deg 38.8deg,
+black 38.8deg 48.5deg,
+red 48.5deg 58.2deg,
+black 58.2deg 67.9deg,
+red 67.9deg 77.6deg,
+black 77.6deg 87.3deg,
+red 87.3deg 97deg,
+black 97deg 106.7deg,
+red 106.7deg 116.4deg,
+black 116.4deg 126.1deg,
+red 126.1deg 135.8deg,
+black 135.8deg 145.5deg,
+red 145.5deg 155.2deg,
+black 155.2deg 164.9deg,
+red 164.9deg 174.6deg,
+black 174.6deg 184.3deg,
+red 184.3deg 194deg,
+black 194deg 203.7deg,
+red 203.7deg 213.4deg,
+black 213.4deg 223.1deg,
+red 223.1deg 232.8deg,
+black 232.8deg 242.5deg,
+red 242.5deg 252.2deg,
+black 252.2deg 261.9deg,
+red 261.9deg 271.6deg,
+black 271.6deg 281.3deg,
+red 281.3deg 291deg,
+black 291deg 300.7deg,
+red 300.7deg 310.4deg,
+black 310.4deg 320.1deg,
+red 320.1deg 329.8deg,
+black 329.8deg 339.5deg,
+red 339.5deg 349.2deg,
+black 349.2deg 360deg
+);
+}
+
+/* KULKA */
+#ball{
+position:absolute;
+width:20px;
+height:20px;
+border-radius:50%;
+background:white;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+}
+
+/* POINTER */
+#wheel-container::after{
+content:"▼";
+color:gold;
+font-size:20px;
+position:absolute;
+top:-10px;
+left:50%;
+transform:translateX(-50%);
+}
