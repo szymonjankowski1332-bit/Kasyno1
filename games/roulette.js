@@ -88,6 +88,34 @@ function spin(){
 let win=Math.floor(Math.random()*37);
 
 let wheel=document.getElementById("wheel");
+let ball=document.getElementById("ball");
+
+/* obrót koła */
+let rotation=Math.random()*360 + 1440;
+wheel.style.transform="rotate("+rotation+"deg)";
+
+/* kulka (odwrotnie) */
+ball.style.transition="transform 4s ease-out";
+ball.style.transform="rotate("+(-rotation + win*9.7)+"deg)";
+
+setTimeout(()=>{
+let text="Wynik: "+win;
+
+if(bets[win]){
+let winAmount=bets[win]*35;
+users[currentUser]+=winAmount;
+text+=" WYGRANA "+winAmount+" zł";
+}
+
+document.getElementById("result").innerText=text;
+bets={};
+updateBalance();
+createTable();
+
+},4000);
+}
+
+let wheel=document.getElementById("wheel");
 wheel.style.transform="rotate("+(Math.random()*720+720)+"deg)";
 
 setTimeout(()=>{
