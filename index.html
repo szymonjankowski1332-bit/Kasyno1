@@ -4,7 +4,105 @@
 <meta charset="UTF-8">
 <title>Frecas Casino</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+body{
+margin:0;
+font-family:Segoe UI;
+background:#0b0b0b;
+color:white;
+text-align:center;
+overflow:hidden;
+}
+
+header{
+padding:15px;
+font-size:26px;
+color:gold;
+}
+
+.screen{display:none;}
+.active{display:block;padding:20px;}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
+margin:5px;
+}
+
+/* LOBBY */
+.games{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.card{
+background:#111;
+padding:20px;
+border-radius:15px;
+cursor:pointer;
+transition:.3s;
+}
+
+.card:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px gold;
+}
+
+/* ROULETTE */
+#wheel{
+width:250px;
+height:250px;
+border-radius:50%;
+margin:20px auto;
+background:conic-gradient(red 0 50%,black 50% 100%);
+transition:transform 4s ease-out;
+}
+
+/* CHIP */
+.chip{
+width:50px;
+height:50px;
+border-radius:50%;
+background:gold;
+line-height:50px;
+cursor:grab;
+position:absolute;
+}
+
+.drop{
+width:80px;
+height:80px;
+border:2px dashed #555;
+margin:10px auto;
+}
+
+/* SLOT */
+.slot{
+font-size:60px;
+margin:20px;
+}
+
+/* AVIATOR */
+#graph{
+width:300px;
+height:150px;
+background:#111;
+margin:auto;
+position:relative;
+overflow:hidden;
+}
+
+#plane{
+position:absolute;
+left:0;
+bottom:0;
+}
+</style>
 </head>
 
 <body>
@@ -13,33 +111,153 @@
 
 <div id="login" class="screen active">
 <input id="nick" placeholder="nick">
-<button onclick="login()">Wejdź</button>
+<button onclick="login()">Start</button>
 </div>
 
 <div id="lobby" class="screen">
-<div class="balance">Saldo: <span id="bal"></span> zł</div>
+<div>Saldo: <span id="bal"></span> zł</div>
 
 <div class="games">
 <div class="card" onclick="show('roulette')">🎡 Ruletka</div>
 <div class="card" onclick="show('slots')">🎰 Sloty</div>
+<div class="card" onclick="show('aviator')">✈️ Aviator</div>
 </div>
 </div>
 
+<!-- ROULETTE -->
 <div id="roulette" class="screen">
-<h2>Ruletka</h2>
-<div id="table" class="grid"></div>
-<p id="result"></p>
+<div id="wheel"></div>
+
+<div class="chip" draggable="true" ondragstart="drag(event)">10</div>
+
+<div class="drop" ondrop="drop(event)" ondragover="allowDrop(event)">POSTAW</div>
+
 <button onclick="spin()">SPIN</button>
 <button onclick="back()">⬅️</button>
+<p id="res"></p>
 </div>
 
+<!-- SLOT -->
 <div id="slots" class="screen">
-<div id="slot" class="slot">🍒 🍒 🍒</div>
+<div class="slot" id="slot">🍒 🍒 🍒</div>
 <button onclick="spinSlot()">SPIN</button>
 <button onclick="back()">⬅️</button>
 </div>
 
-<script src="script.js"></script>
+<!-- AVIATOR -->
+<div id="aviator" class="screen">
+<div id="graph">
+<div id="plane">✈️</div>
+</div>
+<p>x<span id="multi">1.00</span></p>
+<button onclick="startGame()">Start</button>
+<button onclick="cashout()">Cashout</button>
+<button onclick="back()">⬅️</button>
+</div>
+
+<script>
+
+let users=JSON.parse(localStorage.getItem("users")||"{}");
+let u="";
+let bet=0;
+
+/* LOGIN */
+function login(){
+u=nick.value;
+if(!users[u]) users[u]=1000;
+show("lobby");update();
+}
+
+function show(id){
+document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function back(){show("lobby");}
+
+function update(){
+bal.innerText=users[u];
+localStorage.setItem("users",JSON.stringify(users));
+}
+
+/* DRAG CHIP */
+function allowDrop(ev){ev.preventDefault();}
+function drag(ev){ev.dataTransfer.setData("text","10");}
+function drop(ev){
+ev.preventDefault();
+bet+=10;
+}
+
+/* ROULETTE */
+function spin(){
+if(users[u]<bet)return;
+users[u]-=bet;
+
+let deg=Math.random()*360+720;
+wheel.style.transform="rotate("+deg+"deg)";
+
+setTimeout(()=>{
+if(Math.random()>0.5){
+users[u]+=bet*2;
+res.innerText="WIN";
+}else res.innerText="LOSE";
+
+bet=0;
+update();
+},4000);
+}
+
+/* SLOT ANIMATION */
+function spinSlot(){
+if(users[u]<50)return;
+users[u]-=50;
+
+let s=["🍒","🍋","💎","7️⃣"];
+let i=setInterval(()=>{
+slot.innerText=s[Math.random()*4|0]+" "+s[Math.random()*4|0]+" "+s[Math.random()*4|0];
+},100);
+
+setTimeout(()=>{
+clearInterval(i);
+let r=[s[Math.random()*4|0],s[Math.random()*4|0],s[Math.random()*4|0]];
+slot.innerText=r.join(" ");
+if(r[0]==r[1]&&r[1]==r[2]) users[u]+=300;
+update();
+},1000);
+}
+
+/* AVIATOR */
+let running=false,m=1,interval;
+
+function startGame(){
+if(users[u]<50)return;
+users[u]-=50;
+m=1;
+running=true;
+
+interval=setInterval(()=>{
+m+=0.05;
+multi.innerText=m.toFixed(2);
+plane.style.left=(m*10)+"px";
+plane.style.bottom=(m*5)+"px";
+
+if(Math.random()<0.02){
+running=false;
+clearInterval(interval);
+multi.innerText="CRASH";
+}
+},100);
+}
+
+function cashout(){
+if(!running)return;
+users[u]+=50*m;
+running=false;
+clearInterval(interval);
+update();
+}
+
+</script>
 
 </body>
 </html>
