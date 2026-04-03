@@ -2,125 +2,14 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Frecas Casino FINAL</title>
+<title>Frecas Casino DEV</title>
 
-<style>
-body{
-margin:0;
-font-family:Segoe UI;
-background:#070707;
-color:white;
-text-align:center;
-overflow:hidden;
-}
-
-/* HEADER */
-header{
-padding:15px;
-font-size:26px;
-color:gold;
-}
-
-/* SCREENS */
-.screen{display:none;}
-.active{display:block;padding:20px;}
-
-/* BUTTON */
-button{
-padding:10px 15px;
-border:none;
-border-radius:10px;
-background:gold;
-cursor:pointer;
-margin:5px;
-}
-
-/* LOBBY */
-.games{
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.card{
-background:#111;
-padding:20px;
-border-radius:15px;
-cursor:pointer;
-transition:.3s;
-}
-
-.card:hover{
-transform:scale(1.1);
-box-shadow:0 0 20px gold;
-}
-
-/* ROULETTE GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(12,45px);
-gap:4px;
-justify-content:center;
-margin-top:20px;
-}
-
-.cell{
-padding:10px;
-font-size:12px;
-cursor:pointer;
-border-radius:4px;
-}
-
-.red{background:#a00;}
-.black{background:#111;border:1px solid #555;}
-.green{background:green;}
-
-.cell:hover{outline:2px solid gold;}
-
-/* WHEEL */
-#wheel{
-width:200px;
-height:200px;
-border-radius:50%;
-margin:20px auto;
-background:conic-gradient(red 0 50%,black 50% 100%);
-transition:transform 4s ease-out;
-}
-
-/* SLOT REEL */
-.reel{
-height:100px;
-overflow:hidden;
-display:inline-block;
-width:80px;
-background:#111;
-margin:5px;
-font-size:50px;
-}
-
-/* AVIATOR */
-#graph{
-width:300px;
-height:150px;
-background:#111;
-margin:auto;
-position:relative;
-overflow:hidden;
-}
-
-#plane{
-position:absolute;
-bottom:0;
-left:0;
-font-size:20px;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>🎰 FRECAS CASINO FINAL</header>
+<header>🎰 FRECAS CASINO DEV</header>
 
 <div id="login" class="screen active">
 <input id="nick" placeholder="nick">
@@ -131,160 +20,18 @@ font-size:20px;
 <div>Saldo: <span id="bal"></span> zł</div>
 
 <div class="games">
-<div class="card" onclick="show('roulette')">🎡 Ruletka</div>
-<div class="card" onclick="show('slots')">🎰 Sloty</div>
-<div class="card" onclick="show('aviator')">✈️ Aviator</div>
+<div class="card" onclick="openGame('roulette')">🎡 Ruletka</div>
+<div class="card" onclick="openGame('slots')">🎰 Sloty</div>
+<div class="card" onclick="openGame('aviator')">✈️ Aviator</div>
 </div>
 </div>
 
-<!-- ROULETTE -->
-<div id="roulette" class="screen">
-<div id="wheel"></div>
-<div id="table" class="grid"></div>
-<p id="r"></p>
-<button onclick="spin()">SPIN</button>
-<button onclick="back()">⬅️</button>
-</div>
+<div id="gameScreen" class="screen"></div>
 
-<!-- SLOT -->
-<div id="slots" class="screen">
-<div class="reel" id="r1">🍒</div>
-<div class="reel" id="r2">🍒</div>
-<div class="reel" id="r3">🍒</div>
-<br>
-<button onclick="spinSlot()">SPIN</button>
-<button onclick="back()">⬅️</button>
-</div>
-
-<!-- AVIATOR -->
-<div id="aviator" class="screen">
-<div id="graph">
-<div id="plane">✈️</div>
-</div>
-<p>x<span id="multi">1.00</span></p>
-<button onclick="startGame()">Start</button>
-<button onclick="cashout()">Cashout</button>
-<button onclick="back()">⬅️</button>
-</div>
-
-<script>
-
-let users=JSON.parse(localStorage.getItem("users")||"{}");
-let u="";
-let bets={};
-
-/* LOGIN */
-function login(){
-u=nick.value;
-if(!users[u]) users[u]=1000;
-show("lobby");update();
-}
-
-/* UI */
-function show(id){
-document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-function back(){show("lobby");}
-
-function update(){
-bal.innerText=users[u];
-localStorage.setItem("users",JSON.stringify(users));
-}
-
-/* ROULETTE TABLE */
-let table=document.getElementById("table");
-for(let i=0;i<=36;i++){
-let d=document.createElement("div");
-d.innerText=i;
-d.className="cell "+(i==0?"green":(i%2?"red":"black"));
-d.onclick=()=>bet(i);
-table.appendChild(d);
-}
-
-function bet(n){
-if(users[u]<10)return;
-users[u]-=10;
-bets[n]=(bets[n]||0)+10;
-update();
-}
-
-/* SPIN */
-function spin(){
-let win=Math.floor(Math.random()*37);
-r.innerText="Wynik: "+win;
-
-let deg=Math.random()*360+720;
-wheel.style.transform="rotate("+deg+"deg)";
-
-setTimeout(()=>{
-if(bets[win]){
-let w=bets[win]*35;
-users[u]+=w;
-r.innerText+=" WYGRANA "+w;
-}
-bets={};
-update();
-},4000);
-}
-
-/* SLOT */
-function spinSlot(){
-if(users[u]<50)return;
-users[u]-=50;
-
-let symbols=["🍒","🍋","💎","7️⃣"];
-let reels=[r1,r2,r3];
-
-let i=setInterval(()=>{
-reels.forEach(r=>r.innerText=symbols[Math.random()*4|0]);
-},100);
-
-setTimeout(()=>{
-clearInterval(i);
-let res=[symbols[Math.random()*4|0],symbols[Math.random()*4|0],symbols[Math.random()*4|0]];
-r1.innerText=res[0];
-r2.innerText=res[1];
-r3.innerText=res[2];
-
-if(res[0]==res[1]&&res[1]==res[2]) users[u]+=300;
-update();
-},1200);
-}
-
-/* AVIATOR */
-let running=false,m=1,int;
-
-function startGame(){
-if(users[u]<50)return;
-users[u]-=50;
-m=1;
-running=true;
-
-int=setInterval(()=>{
-m+=0.04;
-multi.innerText=m.toFixed(2);
-plane.style.left=(m*10)+"px";
-plane.style.bottom=(m*5)+"px";
-
-if(Math.random()<0.02){
-running=false;
-clearInterval(int);
-multi.innerText="CRASH";
-}
-},100);
-}
-
-function cashout(){
-if(!running)return;
-users[u]+=50*m;
-running=false;
-clearInterval(int);
-update();
-}
-
-</script>
+<script src="app.js"></script>
+<script src="games/roulette.js"></script>
+<script src="games/slots.js"></script>
+<script src="games/aviator.js"></script>
 
 </body>
 </html>
