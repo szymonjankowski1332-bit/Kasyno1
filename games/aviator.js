@@ -64,7 +64,7 @@ crashPoint = 1 + Math.random()*5;
 ctx.clearRect(0,0,300,150);
 
 let x=0;
-
+let plane=document.getElementById("plane");
 gameLoop = setInterval(()=>{
 
 ctx.lineWidth=2;
