@@ -8,127 +8,78 @@ el.innerHTML=`
 
 ${renderBets()}
 
-<p>Dealer: <span id="dealer"></span></p>
-<p>Ty: <span id="player"></span></p>
-
-<p id="bjResult"></p>
+<p>Twoje: <span id="player"></span></p>
+<p>Krupier: <span id="dealer"></span></p>
 
 <button onclick="startBJ()">Start</button>
-<button onclick="hit()">Hit</button>
-<button onclick="stand()">Stand</button>
+<button onclick="hit()">Dobierz</button>
+<button onclick="stand()">Stop</button>
 <button onclick="show('lobby')">⬅️</button>
+
+<p id="bjMsg"></p>
 `;
 
 updateBalance();
 }
 
-let deck=[], player=[], dealer=[], bjRunning=false;
+let player=[], dealer=[], playingBJ=false;
+
+function card(){
+return Math.floor(Math.random()*10)+1;
+}
+
+function sum(arr){
+return arr.reduce((a,b)=>a+b,0);
+}
 
 function startBJ(){
-
-if(users[currentUser] < currentBet){
-alert("Brak kasy");
-return;
-}
+if(users[currentUser] < currentBet) return;
 
 users[currentUser]-=currentBet;
+
+player=[card(),card()];
+dealer=[card()];
+
+playingBJ=true;
+
+renderBJ();
 updateBalance();
-
-deck=[];
-player=[];
-dealer=[];
-bjRunning=true;
-
-/* TALIA */
-let suits=["♠","♥","♦","♣"];
-let values=[2,3,4,5,6,7,8,9,10,"J","Q","K","A"];
-
-for(let s of suits){
-for(let v of values){
-deck.push({v,s});
-}
 }
 
-/* SHUFFLE */
-deck.sort(()=>Math.random()-0.5);
-
-/* ROZDANIE */
-player.push(draw(), draw());
-dealer.push(draw(), draw());
-
-updateBJ();
-}
-
-function draw(){
-return deck.pop();
-}
-
-function value(hand){
-let sum=0;
-let aces=0;
-
-for(let c of hand){
-if(typeof c.v==="number") sum+=c.v;
-else if(c.v==="A"){sum+=11; aces++;}
-else sum+=10;
-}
-
-while(sum>21 && aces){
-sum-=10;
-aces--;
-}
-
-return sum;
-}
-
-function updateBJ(){
-document.getElementById("player").innerText=
-player.map(c=>c.v+c.s).join(" ")+" ("+value(player)+")";
-
-document.getElementById("dealer").innerText=
-dealer.map(c=>c.v+c.s).join(" ")+" ("+value(dealer)+")";
+function renderBJ(){
+document.getElementById("player").innerText=player.join(",")+" ("+sum(player)+")";
+document.getElementById("dealer").innerText=dealer.join(",")+" ("+sum(dealer)+")";
 }
 
 function hit(){
-if(!bjRunning) return;
+if(!playingBJ) return;
 
-player.push(draw());
-updateBJ();
+player.push(card());
 
-if(value(player)>21){
-endBJ("PRZEGRANA ❌");
+if(sum(player)>21){
+document.getElementById("bjMsg").innerText="PRZEGRANA";
+playingBJ=false;
+}else{
+renderBJ();
 }
 }
 
 function stand(){
-if(!bjRunning) return;
-
-/* DEALER GRA */
-while(value(dealer)<17){
-dealer.push(draw());
+while(sum(dealer)<17){
+dealer.push(card());
 }
 
-updateBJ();
+renderBJ();
 
-let p=value(player);
-let d=value(dealer);
+let p=sum(player), d=sum(dealer);
 
 if(d>21 || p>d){
 users[currentUser]+=currentBet*2;
-endBJ("WYGRANA 💰");
-}
-else if(p===d){
-users[currentUser]+=currentBet;
-endBJ("REMIS");
-}
-else{
-endBJ("PRZEGRANA ❌");
+document.getElementById("bjMsg").innerText="WYGRANA";
+}else{
+document.getElementById("bjMsg").innerText="PRZEGRANA";
 }
 
+playingBJ=false;
 updateBalance();
-}
-
-function endBJ(text){
-document.getElementById("bjResult").innerText=text;
-bjRunning=false;
 }
