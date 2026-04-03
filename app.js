@@ -48,3 +48,25 @@ document.getElementById("adminMsg").innerText="Dodano "+a+" zł dla "+u;
 
 localStorage.setItem("users",JSON.stringify(users));
 }
+let fakeNames=["Kuba","Mati","Oskar","Bartek","Kacper","Adam"];
+
+setInterval(()=>{
+let name=fakeNames[Math.random()*fakeNames.length|0];
+let win=(Math.random()*500+50|0);
+
+let msg=`${name} wygrał ${win} zł 🎉`;
+
+let feed=document.getElementById("feed");
+
+if(feed){
+let p=document.createElement("p");
+p.innerText=msg;
+
+feed.prepend(p);
+
+if(feed.children.length>5){
+feed.removeChild(feed.lastChild);
+}
+}
+
+},3000);
