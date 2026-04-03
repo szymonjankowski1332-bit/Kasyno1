@@ -1,44 +1,32 @@
-body{
-margin:0;
-font-family:Segoe UI;
-background:#060606;
-color:white;
-text-align:center;
+/* ROULETTE */
+
+#wheel{
+width:200px;
+height:200px;
+border-radius:50%;
+margin:20px auto;
+background:conic-gradient(red 0 50%,black 50% 100%);
+transition:transform 3s ease-out;
 }
 
-header{
-padding:15px;
-color:gold;
-font-size:28px;
-}
-
-.screen{display:none;}
-.active{display:block;padding:20px;}
-
-.games{
-display:flex;
+.grid{
+display:grid;
+grid-template-columns:repeat(12,45px);
+gap:4px;
 justify-content:center;
-gap:20px;
-flex-wrap:wrap;
 }
 
-.card{
-background:#111;
-padding:25px;
-border-radius:15px;
+.cell{
+padding:10px;
+font-size:12px;
 cursor:pointer;
-transition:.3s;
+border-radius:4px;
 }
 
-.card:hover{
-transform:scale(1.1);
-box-shadow:0 0 25px gold;
-}
+.red{background:#a00;}
+.black{background:#111;border:1px solid #555;}
+.green{background:green;}
 
-button{
-padding:10px 15px;
-border:none;
-border-radius:10px;
-background:gold;
-cursor:pointer;
+.cell:hover{
+outline:2px solid gold;
 }
