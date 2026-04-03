@@ -2,156 +2,235 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Casino PRO+</title>
+<title>CASINO ULTRA</title>
 
 <style>
-body {
-    margin:0;
-    font-family:Arial;
-    background: radial-gradient(circle,#0a0a1a,#000);
-    color:white;
-    text-align:center;
-}
+body {margin:0;font-family:Arial;background:#0a0a1a;color:white;text-align:center;}
+header {padding:15px;background:#111;font-size:24px;box-shadow:0 0 20px #00ffcc;}
 
-header {
-    padding:15px;
-    font-size:26px;
-    background:#111;
-    box-shadow:0 0 20px #00ffcc;
-}
-
-.balance {
-    margin:10px;
-    color:#00ffcc;
-}
-
-nav button {
-    margin:5px;
-    padding:10px 20px;
-    border:none;
-    background:#00ffcc;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-.game {display:none;}
+.screen {display:none;}
 .active {display:block;}
 
-#wheel {
-    margin:30px auto;
-    width:200px;
-    height:200px;
-    border-radius:50%;
-    border:10px solid #333;
-    background: conic-gradient(red 0 50%, black 50% 100%);
-    transition: transform 3s ease-out;
+.games button{
+margin:10px;
+padding:20px;
+font-size:18px;
+background:#00ffcc;
+border:none;
+border-radius:10px;
+cursor:pointer;
 }
 
+.balance {margin:10px;color:#00ffcc;}
+
+#wheel{
+width:220px;height:220px;border-radius:50%;
+margin:20px auto;
+background:conic-gradient(red 0 50%, black 50% 100%);
+transition:transform 3s ease-out;
+}
+
+.chips button{
+margin:5px;
+padding:10px;
+border-radius:50%;
+background:gold;
+border:none;
+cursor:pointer;
+}
+
+.online{
+position:fixed;
+right:10px;
+top:100px;
+background:#111;
+padding:10px;
+font-size:12px;
+}
+
+.slot{font-size:50px;}
 </style>
 </head>
 
 <body>
 
-<header>🎰 CASINO PRO+</header>
+<header>🎰 CASINO ULTRA</header>
 
-<div>
-    Gracz: <input id="nick" placeholder="nick">
-    <button onclick="login()">Zaloguj</button>
+<!-- LOGIN -->
+<div id="login" class="screen active">
+<input id="nick" placeholder="nick">
+<button onclick="login()">Wejdź</button>
 </div>
 
-<div class="balance">
-    Saldo: <span id="balance">0</span> zł
-    <button onclick="openAdmin()">⚙️</button>
-</div>
+<!-- LOBBY -->
+<div id="lobby" class="screen">
+<div class="balance">Saldo: <span id="balance">0</span> zł <button onclick="openAdmin()">⚙️</button></div>
 
-<nav>
-    <button onclick="showGame('roulette')">Ruletka</button>
-</nav>
+<div class="games">
+<button onclick="openGame('roulette')">🎡 Ruletka</button>
+<button onclick="openGame('slots')">🎰 Sloty</button>
+<button onclick="openGame('blackjack')">🃏 Blackjack</button>
+</div>
+</div>
 
 <!-- RULETKA -->
-<div id="roulette" class="game active">
-    <div id="wheel"></div>
-    <button onclick="spin()">Zakręć (50 zł)</button>
-    <p id="result"></p>
+<div id="roulette" class="screen">
+<h2>Ruletka</h2>
+<div id="wheel"></div>
+
+<div class="chips">
+<button onclick="setBet(10)">10</button>
+<button onclick="setBet(50)">50</button>
+<button onclick="setBet(100)">100</button>
 </div>
 
+<p>Zakład: <span id="bet">0</span> zł</p>
+
+<button onclick="spin()">Zakręć</button>
+<button onclick="back()">⬅️</button>
+
+<p id="result"></p>
+</div>
+
+<!-- SLOTY -->
+<div id="slots" class="screen">
+<div class="slot" id="slot">🍒 🍒 🍒</div>
+<button onclick="spinSlots()">SPIN (50)</button>
+<button onclick="back()">⬅️</button>
+</div>
+
+<!-- BLACKJACK -->
+<div id="blackjack" class="screen">
+<div id="player"></div>
+<div id="dealer"></div>
+<button onclick="startBJ()">Start (100)</button>
+<button onclick="hit()">Hit</button>
+<button onclick="stand()">Stand</button>
+<button onclick="back()">⬅️</button>
+</div>
+
+<!-- ONLINE FAKE -->
+<div class="online" id="online"></div>
+
 <!-- ADMIN -->
-<div id="admin" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#111; padding:20px;">
-    <input id="pass" placeholder="hasło"><br><br>
-    <input id="target" placeholder="nick"><br><br>
-    <input id="amount" placeholder="kwota"><br><br>
-    <button onclick="addMoney()">Dodaj</button>
+<div id="admin" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;padding:20px;">
+<input id="pass" placeholder="hasło"><br><br>
+<input id="target" placeholder="nick"><br><br>
+<input id="amount" placeholder="kwota"><br><br>
+<button onclick="addMoney()">Dodaj</button>
 </div>
 
 <script>
 
-let currentUser = "";
-let users = JSON.parse(localStorage.getItem("users") || "{}");
+let users=JSON.parse(localStorage.getItem("users")||"{}");
+let currentUser="";
+let bet=0;
 
+// LOGIN
 function login(){
-    let nick = document.getElementById("nick").value;
-    if(!nick) return;
-
-    currentUser = nick;
-
-    if(!users[nick]){
-        users[nick] = 1000;
-    }
-
-    update();
+let n=nick.value;
+if(!n)return;
+currentUser=n;
+if(!users[n]) users[n]=1000;
+show("lobby");
+update();
 }
+
+// UI
+function show(id){
+document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function openGame(g){show(g);}
+function back(){show("lobby");}
 
 function update(){
-    document.getElementById("balance").innerText = users[currentUser] || 0;
-    localStorage.setItem("users", JSON.stringify(users));
+balance.innerText=users[currentUser];
+localStorage.setItem("users",JSON.stringify(users));
 }
 
-function showGame(g){
-    document.querySelectorAll(".game").forEach(x=>x.classList.remove("active"));
-    document.getElementById(g).classList.add("active");
+// RULETKA
+function setBet(v){
+bet=v;
+document.getElementById("bet").innerText=v;
 }
 
-// RULETKA ANIMACJA
 function spin(){
-    if(users[currentUser] < 50) return alert("Brak kasy");
+if(users[currentUser]<bet) return alert("Brak kasy");
 
-    users[currentUser] -= 50;
+users[currentUser]-=bet;
 
-    let wheel = document.getElementById("wheel");
-    let deg = Math.floor(Math.random()*360)+720;
+let deg=Math.random()*360+720;
+wheel.style.transform="rotate("+deg+"deg)";
 
-    wheel.style.transform = "rotate("+deg+"deg)";
+setTimeout(()=>{
+let win=Math.random()>0.5;
+if(win){
+users[currentUser]+=bet*2;
+result.innerText="WYGRANA";
+}else{
+result.innerText="PRZEGRANA";
+}
+update();
+},3000);
+}
 
-    setTimeout(()=>{
-        let win = Math.random() > 0.5;
-        if(win){
-            users[currentUser] += 100;
-            document.getElementById("result").innerText = "WYGRANA!";
-        } else {
-            document.getElementById("result").innerText = "PRZEGRANA";
-        }
-        update();
-    },3000);
+// SLOTY
+function spinSlots(){
+if(users[currentUser]<50)return alert("Brak kasy");
+users[currentUser]-=50;
+let s=["🍒","🍋","💎","7️⃣"];
+let r=[s[Math.random()*4|0],s[Math.random()*4|0],s[Math.random()*4|0]];
+slot.innerText=r.join(" ");
+if(r[0]==r[1]&&r[1]==r[2]){users[currentUser]+=300;}
+update();
+}
+
+// BLACKJACK
+let player=[],dealer=[];
+function draw(){return Math.floor(Math.random()*10)+1;}
+function sum(a){return a.reduce((x,y)=>x+y,0);}
+
+function startBJ(){
+if(users[currentUser]<100)return alert("Brak kasy");
+users[currentUser]-=100;
+player=[draw(),draw()];
+dealer=[draw(),draw()];
+updateBJ();update();
+}
+
+function updateBJ(){
+playerDiv.innerText="Ty: "+player.join(",")+" = "+sum(player);
+dealerDiv.innerText="Dealer: "+dealer[0]+", ?";
+}
+
+function hit(){player.push(draw());updateBJ();}
+function stand(){
+while(sum(dealer)<17) dealer.push(draw());
+let p=sum(player),d=sum(dealer);
+dealerDiv.innerText="Dealer: "+dealer.join(",")+" = "+d;
+if(p<=21&&(p>d||d>21)){users[currentUser]+=200;}
+update();
 }
 
 // ADMIN
-function openAdmin(){
-    document.getElementById("admin").style.display="block";
-}
-
+function openAdmin(){admin.style.display="block";}
 function addMoney(){
-    let pass = document.getElementById("pass").value;
-    if(pass !== "admin123") return alert("Złe hasło");
-
-    let t = document.getElementById("target").value;
-    let a = parseInt(document.getElementById("amount").value);
-
-    if(!users[t]) users[t]=0;
-    users[t]+=a;
-
-    update();
-    document.getElementById("admin").style.display="none";
+if(pass.value!=="admin123") return alert("Złe hasło");
+let t=target.value;
+let a=parseInt(amount.value);
+if(!users[t]) users[t]=0;
+users[t]+=a;
+update();
+admin.style.display="none";
 }
+
+// FAKE ONLINE
+setInterval(()=>{
+let list=["Kuba","Mati","Anna","Player123","Lucky","John"];
+online.innerHTML="ONLINE:<br>"+list.sort(()=>0.5-Math.random()).slice(0,5).join("<br>");
+},2000);
 
 </script>
 
