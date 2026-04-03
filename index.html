@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>🎰 Casino Demo</title>
+<style>
+body {
+  background: radial-gradient(circle, #1a1a1a, #000);
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+h1 {
+  color: gold;
+}
+
+.slot {
+  font-size: 60px;
+  margin: 20px;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 18px;
+  background: gold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: orange;
+}
+
+.box {
+  background: #111;
+  padding: 30px;
+  border-radius: 20px;
+  display: inline-block;
+  box-shadow: 0 0 20px gold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎰 CASINO VIP</h1>
+
+<div class="box">
+  <p>💰 Punkty: <span id="balance">1000</span></p>
+
+  <div class="slot">
+    <span id="s1">🍒</span>
+    <span id="s2">🍋</span>
+    <span id="s3">🍊</span>
+  </div>
+
+  <button onclick="spin()">🎲 SPIN (-10)</button>
+
+  <p id="result"></p>
+</div>
+
+<script>
+let balance = 1000;
+let symbols = ["🍒","🍋","🍊","💎","⭐","7️⃣"];
+
+function spin() {
+  if (balance < 10) {
+    result.innerText = "❌ Brak punktów";
+    return;
+  }
+
+  balance -= 10;
+
+  let a = symbols[Math.floor(Math.random()*symbols.length)];
+  let b = symbols[Math.floor(Math.random()*symbols.length)];
+  let c = symbols[Math.floor(Math.random()*symbols.length)];
+
+  s1.innerText = a;
+  s2.innerText = b;
+  s3.innerText = c;
+
+  if (a === b && b === c) {
+    balance += 150;
+    result.innerText = "🔥 JACKPOT +150!";
+  } else if (a === b || b === c || a === c) {
+    balance += 30;
+    result.innerText = "✨ Wygrana +30";
+  } else {
+    result.innerText = "😢 Przegrana";
+  }
+
+  document.getElementById("balance").innerText = balance;
+}
+</script>
+
+</body>
+</html>
