@@ -12,7 +12,7 @@ el.innerHTML=`
 </div>
 
 <p>x<span id="multi">1.00</span></p>
-
+${renderBets()}
 <button onclick="startAviator()">Start</button>
 <button onclick="cashout()">Cashout</button>
 <button onclick="show('lobby')">⬅️</button>
@@ -28,7 +28,7 @@ window.startAviator = function(){
 
 if(running) return;
 
-let bet = 1;
+let bet = currentBet;
 
 if(users[currentUser] < bet){
 alert("Za mało kasy");
@@ -95,7 +95,7 @@ window.cashout = function(){
 
 if(!running) return;
 
-let win = 1 * m;
+let win = currentBet * m;
 
 users[currentUser]+=Math.floor(win);
 
