@@ -372,13 +372,6 @@ gap:5px;
 justify-content:center;
 margin:10px;
 }
-#minesGrid{
-display:grid;
-grid-template-columns:repeat(5,60px);
-gap:5px;
-justify-content:center;
-margin:10px;
-}
 .mineCell{
 width:60px;
 height:60px;
