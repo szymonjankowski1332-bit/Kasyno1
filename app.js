@@ -1,3 +1,4 @@
+alert("APP DZIAŁA");
 let users = JSON.parse(localStorage.getItem("users") || "{}");
 let currentUser = null;
 
