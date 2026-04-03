@@ -7,7 +7,7 @@ el.innerHTML=`
 <div>Saldo: <span id="bal"></span> zł</div>
 
 <div id="aviatorBox">
-  <canvas id="chart" width="300" height="150"></canvas>
+  <canvas id="chart" width="600" height="300"></canvas>
   <div id="plane">✈️</div>
 </div>
 
