@@ -3,28 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <title>Frecas Casino</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Frecas Casino</h1>
+<header>🎰 FRECAS CASINO</header>
 
-<div id="login">
+<!-- LOGIN -->
+<div id="login" class="screen active">
 <input id="nick" placeholder="nick">
 <button onclick="login()">Start</button>
 </div>
 
-<div id="lobby" style="display:none;">
-<p>Saldo: <span id="bal"></span> zł</p>
+<!-- LOBBY -->
+<div id="lobby" class="screen" style="display:none;">
+<div>Saldo: <span id="bal"></span> zł</div>
 
-<button onclick="loadRoulette()">🎡 Ruletka</button>
-<button onclick="loadAviator()">✈️ Aviator</button>
+<button onclick="openAdmin()">👑 Admin</button>
+
+<div id="feed"></div>
+
+<div class="games">
+<div class="card" onclick="openGame('roulette')">🎡 Ruletka</div>
+<div class="card" onclick="openGame('slots')">🎰 Sloty</div>
+<div class="card" onclick="openGame('aviator')">✈️ Aviator</div>
+</div>
 </div>
 
-<div id="game"></div>
+<!-- GAME -->
+<div id="gameScreen" class="screen" style="display:none;"></div>
 
+<!-- ADMIN -->
+<div id="admin" class="screen" style="display:none;">
+<h2>👑 Panel Admina</h2>
+
+<input id="targetUser" placeholder="nick gracza">
+<input id="amount" placeholder="kwota">
+
+<button onclick="addMoney()">Dodaj kasę</button>
+<button onclick="show('lobby')">⬅️</button>
+
+<p id="adminMsg"></p>
+</div>
+
+<!-- SCRIPTS -->
 <script src="app.js"></script>
 <script src="games/roulette.js"></script>
+<script src="games/slots.js"></script>
 <script src="games/aviator.js"></script>
 
 </body>
