@@ -27,8 +27,6 @@ initDrag();
 drawNumbers();
 }
 
-/* RESZTA FUNKCJI MUSI BYĆ TEŻ */
-
 let bets={};
 
 /* TABLE */
@@ -71,7 +69,7 @@ e.dataTransfer.setData("chip",chip.dataset.value);
 });
 }
 
-/* VISUAL CHIP */
+/* CHIP VISUAL */
 function addChipVisual(cell,value){
 let c=document.createElement("div");
 c.className="chip-on";
@@ -80,18 +78,16 @@ c.innerText=value;
 cell.appendChild(c);
 }
 
-/* SPIN */
+/* 🎡 SPIN — NAPRAWIONY */
 function spin(){
 let win=Math.floor(Math.random()*37);
 
 let wheel=document.getElementById("wheel");
 let ball=document.getElementById("ball");
 
-/* obrót koła */
 let rotation=Math.random()*360 + 1440;
-wheel.style.transform="rotate("+rotation+"deg)";
 
-/* kulka (odwrotnie) */
+wheel.style.transform="rotate("+rotation+"deg)";
 ball.style.transition="transform 4s ease-out";
 ball.style.transform="rotate("+(-rotation + win*9.7)+"deg)";
 
@@ -105,6 +101,7 @@ text+=" WYGRANA "+winAmount+" zł";
 }
 
 document.getElementById("result").innerText=text;
+
 bets={};
 updateBalance();
 createTable();
@@ -112,26 +109,7 @@ createTable();
 },4000);
 }
 
-let wheel=document.getElementById("wheel");
-wheel.style.transform="rotate("+(Math.random()*720+720)+"deg)";
-
-setTimeout(()=>{
-let text="Wynik: "+win;
-
-if(bets[win]){
-let winAmount=bets[win]*35;
-users[currentUser]+=winAmount;
-text+=" WYGRANA "+winAmount+" zł";
-}
-
-document.getElementById("result").innerText=text;
-bets={};
-updateBalance();
-createTable();
-
-},3000);
-}
-<div id="numbers"></div>
+/* NUMERY */
 function drawNumbers(){
 let nums=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
 
@@ -144,4 +122,3 @@ d.innerText=n+" ";
 container.appendChild(d);
 });
 }
-drawNumbers();
