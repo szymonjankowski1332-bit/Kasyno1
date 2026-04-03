@@ -82,3 +82,13 @@ feed.removeChild(feed.lastChild);
 <p id="adminMsg"></p>
 </div>
 if(name==="roulette") loadRoulette();
+function show(name){
+document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
+
+let el=document.getElementById(name);
+if(el) el.style.display="block";
+
+if(name==="roulette") loadRoulette();
+if(name==="slots") loadSlots();
+if(name==="aviator") loadAviator();
+}
