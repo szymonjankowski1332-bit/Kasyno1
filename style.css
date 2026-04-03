@@ -1,1 +1,44 @@
+body{
+margin:0;
+font-family:Segoe UI;
+background:#060606;
+color:white;
+text-align:center;
+}
 
+header{
+padding:15px;
+color:gold;
+font-size:28px;
+}
+
+.screen{display:none;}
+.active{display:block;padding:20px;}
+
+.games{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.card{
+background:#111;
+padding:25px;
+border-radius:15px;
+cursor:pointer;
+transition:.3s;
+}
+
+.card:hover{
+transform:scale(1.1);
+box-shadow:0 0 25px gold;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
+}
