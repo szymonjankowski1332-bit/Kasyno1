@@ -2,27 +2,30 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Frecas Casino</title>
+<title>Frecas Casino FINAL</title>
 
 <style>
 body{
 margin:0;
 font-family:Segoe UI;
-background:#0b0b0b;
+background:#070707;
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
+/* HEADER */
 header{
 padding:15px;
 font-size:26px;
 color:gold;
 }
 
+/* SCREENS */
 .screen{display:none;}
 .active{display:block;padding:20px;}
 
+/* BUTTON */
 button{
 padding:10px 15px;
 border:none;
@@ -53,38 +56,47 @@ transform:scale(1.1);
 box-shadow:0 0 20px gold;
 }
 
-/* ROULETTE */
+/* ROULETTE GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(12,45px);
+gap:4px;
+justify-content:center;
+margin-top:20px;
+}
+
+.cell{
+padding:10px;
+font-size:12px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.red{background:#a00;}
+.black{background:#111;border:1px solid #555;}
+.green{background:green;}
+
+.cell:hover{outline:2px solid gold;}
+
+/* WHEEL */
 #wheel{
-width:250px;
-height:250px;
+width:200px;
+height:200px;
 border-radius:50%;
 margin:20px auto;
 background:conic-gradient(red 0 50%,black 50% 100%);
 transition:transform 4s ease-out;
 }
 
-/* CHIP */
-.chip{
-width:50px;
-height:50px;
-border-radius:50%;
-background:gold;
-line-height:50px;
-cursor:grab;
-position:absolute;
-}
-
-.drop{
+/* SLOT REEL */
+.reel{
+height:100px;
+overflow:hidden;
+display:inline-block;
 width:80px;
-height:80px;
-border:2px dashed #555;
-margin:10px auto;
-}
-
-/* SLOT */
-.slot{
-font-size:60px;
-margin:20px;
+background:#111;
+margin:5px;
+font-size:50px;
 }
 
 /* AVIATOR */
@@ -99,15 +111,16 @@ overflow:hidden;
 
 #plane{
 position:absolute;
-left:0;
 bottom:0;
+left:0;
+font-size:20px;
 }
 </style>
 </head>
 
 <body>
 
-<header>🎰 FRECAS CASINO</header>
+<header>🎰 FRECAS CASINO FINAL</header>
 
 <div id="login" class="screen active">
 <input id="nick" placeholder="nick">
@@ -127,19 +140,18 @@ bottom:0;
 <!-- ROULETTE -->
 <div id="roulette" class="screen">
 <div id="wheel"></div>
-
-<div class="chip" draggable="true" ondragstart="drag(event)">10</div>
-
-<div class="drop" ondrop="drop(event)" ondragover="allowDrop(event)">POSTAW</div>
-
+<div id="table" class="grid"></div>
+<p id="r"></p>
 <button onclick="spin()">SPIN</button>
 <button onclick="back()">⬅️</button>
-<p id="res"></p>
 </div>
 
 <!-- SLOT -->
 <div id="slots" class="screen">
-<div class="slot" id="slot">🍒 🍒 🍒</div>
+<div class="reel" id="r1">🍒</div>
+<div class="reel" id="r2">🍒</div>
+<div class="reel" id="r3">🍒</div>
+<br>
 <button onclick="spinSlot()">SPIN</button>
 <button onclick="back()">⬅️</button>
 </div>
@@ -159,7 +171,7 @@ bottom:0;
 
 let users=JSON.parse(localStorage.getItem("users")||"{}");
 let u="";
-let bet=0;
+let bets={};
 
 /* LOGIN */
 function login(){
@@ -168,6 +180,7 @@ if(!users[u]) users[u]=1000;
 show("lobby");update();
 }
 
+/* UI */
 function show(id){
 document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
 document.getElementById(id).classList.add("active");
@@ -180,54 +193,68 @@ bal.innerText=users[u];
 localStorage.setItem("users",JSON.stringify(users));
 }
 
-/* DRAG CHIP */
-function allowDrop(ev){ev.preventDefault();}
-function drag(ev){ev.dataTransfer.setData("text","10");}
-function drop(ev){
-ev.preventDefault();
-bet+=10;
+/* ROULETTE TABLE */
+let table=document.getElementById("table");
+for(let i=0;i<=36;i++){
+let d=document.createElement("div");
+d.innerText=i;
+d.className="cell "+(i==0?"green":(i%2?"red":"black"));
+d.onclick=()=>bet(i);
+table.appendChild(d);
 }
 
-/* ROULETTE */
+function bet(n){
+if(users[u]<10)return;
+users[u]-=10;
+bets[n]=(bets[n]||0)+10;
+update();
+}
+
+/* SPIN */
 function spin(){
-if(users[u]<bet)return;
-users[u]-=bet;
+let win=Math.floor(Math.random()*37);
+r.innerText="Wynik: "+win;
 
 let deg=Math.random()*360+720;
 wheel.style.transform="rotate("+deg+"deg)";
 
 setTimeout(()=>{
-if(Math.random()>0.5){
-users[u]+=bet*2;
-res.innerText="WIN";
-}else res.innerText="LOSE";
-
-bet=0;
+if(bets[win]){
+let w=bets[win]*35;
+users[u]+=w;
+r.innerText+=" WYGRANA "+w;
+}
+bets={};
 update();
 },4000);
 }
 
-/* SLOT ANIMATION */
+/* SLOT */
 function spinSlot(){
 if(users[u]<50)return;
 users[u]-=50;
 
-let s=["🍒","🍋","💎","7️⃣"];
+let symbols=["🍒","🍋","💎","7️⃣"];
+let reels=[r1,r2,r3];
+
 let i=setInterval(()=>{
-slot.innerText=s[Math.random()*4|0]+" "+s[Math.random()*4|0]+" "+s[Math.random()*4|0];
+reels.forEach(r=>r.innerText=symbols[Math.random()*4|0]);
 },100);
 
 setTimeout(()=>{
 clearInterval(i);
-let r=[s[Math.random()*4|0],s[Math.random()*4|0],s[Math.random()*4|0]];
-slot.innerText=r.join(" ");
-if(r[0]==r[1]&&r[1]==r[2]) users[u]+=300;
+let res=[symbols[Math.random()*4|0],symbols[Math.random()*4|0],symbols[Math.random()*4|0]];
+r1.innerText=res[0];
+r2.innerText=res[1];
+r3.innerText=res[2];
+
+if(res[0]==res[1]&&res[1]==res[2]) users[u]+=300;
 update();
-},1000);
+},1200);
 }
 
 /* AVIATOR */
-let running=false,m=1,interval;
+let running=false,m=1,int;
 
 function startGame(){
 if(users[u]<50)return;
@@ -235,15 +262,15 @@ users[u]-=50;
 m=1;
 running=true;
 
-interval=setInterval(()=>{
-m+=0.05;
+int=setInterval(()=>{
+m+=0.04;
 multi.innerText=m.toFixed(2);
 plane.style.left=(m*10)+"px";
 plane.style.bottom=(m*5)+"px";
 
 if(Math.random()<0.02){
 running=false;
-clearInterval(interval);
+clearInterval(int);
 multi.innerText="CRASH";
 }
 },100);
@@ -253,7 +280,7 @@ function cashout(){
 if(!running)return;
 users[u]+=50*m;
 running=false;
-clearInterval(interval);
+clearInterval(int);
 update();
 }
 
