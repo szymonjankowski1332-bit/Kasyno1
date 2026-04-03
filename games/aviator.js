@@ -68,7 +68,7 @@ ctx.lineTo(x,150-(m*20));
 ctx.stroke();
 
 /* ✈️ SAMOLOT */
-let posY = 150 - (m*20);
+let posY = 300 - (m*40);
 
 /* LIMIT żeby nie znikał */
 if(posY < 10) posY = 10;
