@@ -2,17 +2,16 @@ function loadRoulette(){
 let el=document.getElementById("gameScreen");
 
 el.innerHTML=`
-<h2>🎡 Ruletka PRO</h2>
+<h2>🎡 Ruletka PRO+</h2>
 
-<div>
-Saldo: <span id="bal"></span> zł
-</div>
+<div>Saldo: <span id="bal"></span> zł</div>
 
-<div style="margin:10px;">
-Wybierz żeton:
-<button onclick="setChip(10)">10</button>
-<button onclick="setChip(50)">50</button>
-<button onclick="setChip(100)">100</button>
+<h3>Przeciągnij żeton:</h3>
+
+<div id="chips">
+<div class="chip" draggable="true" data-value="10">10</div>
+<div class="chip" draggable="true" data-value="50">50</div>
+<div class="chip" draggable="true" data-value="100">100</div>
 </div>
 
 <div id="wheel"></div>
@@ -27,15 +26,12 @@ Wybierz żeton:
 
 updateBalance();
 createTable();
+initDrag();
 }
 
-let currentChip=10;
 let bets={};
 
-function setChip(v){
-currentChip=v;
-}
-
+/* TABLE */
 function createTable(){
 let table=document.getElementById("table");
 table.innerHTML="";
@@ -45,20 +41,46 @@ let d=document.createElement("div");
 d.innerText=i;
 d.className="cell "+(i==0?"green":(i%2?"red":"black"));
 
-d.onclick=()=>{
-if(users[currentUser] < currentChip) return;
+d.dataset.number=i;
 
-users[currentUser]-=currentChip;
-bets[i]=(bets[i]||0)+currentChip;
+d.addEventListener("dragover",(e)=>e.preventDefault());
 
-d.style.boxShadow="0 0 10px gold";
+d.addEventListener("drop",(e)=>{
+let value=parseInt(e.dataTransfer.getData("chip"));
+
+if(users[currentUser] < value) return;
+
+users[currentUser]-=value;
+bets[i]=(bets[i]||0)+value;
+
+addChipVisual(d,value);
+
 updateBalance();
-};
+});
 
 table.appendChild(d);
 }
 }
 
+/* DRAG */
+function initDrag(){
+document.querySelectorAll(".chip").forEach(chip=>{
+chip.addEventListener("dragstart",(e)=>{
+e.dataTransfer.setData("chip",chip.dataset.value);
+});
+});
+}
+
+/* VISUAL CHIP */
+function addChipVisual(cell,value){
+let c=document.createElement("div");
+c.className="chip-on";
+c.innerText=value;
+
+cell.appendChild(c);
+}
+
+/* SPIN */
 function spin(){
 let win=Math.floor(Math.random()*37);
 
