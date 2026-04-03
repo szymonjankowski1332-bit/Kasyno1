@@ -1,18 +1,22 @@
 function loadRoulette(){
-let el=document.getElementById("gameScreen");
+let el = document.getElementById("gameScreen");
 
-el.innerHTML=`
+el.innerHTML = `
 <h2>🎡 Ruletka</h2>
 
 <div>Saldo: <span id="bal"></span> zł</div>
 
-<div id="wheel-container">
-  <div id="wheel"></div>
-  <div id="ball"></div>
+<!-- ŻETONY -->
+<div id="chips">
+<div class="chip" draggable="true" data-value="10">10</div>
+<div class="chip" draggable="true" data-value="50">50</div>
+<div class="chip" draggable="true" data-value="100">100</div>
 </div>
 
-<div id="numbers"></div>
+<!-- KOŁO -->
+<div id="wheel" style="width:150px;height:150px;border:5px solid gold;border-radius:50%;margin:20px auto;"></div>
 
+<!-- STÓŁ -->
 <div id="table" class="grid"></div>
 
 <p id="result"></p>
@@ -24,34 +28,45 @@ el.innerHTML=`
 updateBalance();
 createTable();
 initDrag();
-drawNumbers();
 }
 
-let bets={};
+let bets = {};
 
-/* TABLE */
+/* 🎯 STÓŁ */
 function createTable(){
-let table=document.getElementById("table");
-table.innerHTML="";
+let table = document.getElementById("table");
+table.innerHTML = "";
 
 for(let i=0;i<=36;i++){
-let d=document.createElement("div");
-d.innerText=i;
-d.className="cell "+(i==0?"green":(i%2?"red":"black"));
+let d = document.createElement("div");
+d.innerText = i;
 
-d.dataset.number=i;
+d.style.display="inline-block";
+d.style.width="40px";
+d.style.height="40px";
+d.style.margin="2px";
+d.style.lineHeight="40px";
+d.style.textAlign="center";
+d.style.border="1px solid white";
 
+d.style.background = i==0 ? "green" : (i%2 ? "red" : "black");
+d.style.color = "white";
+
+d.dataset.number = i;
+
+/* DROP */
 d.addEventListener("dragover",(e)=>e.preventDefault());
 
 d.addEventListener("drop",(e)=>{
-let value=parseInt(e.dataTransfer.getData("chip"));
+let value = parseInt(e.dataTransfer.getData("chip"));
 
 if(users[currentUser] < value) return;
 
-users[currentUser]-=value;
-bets[i]=(bets[i]||0)+value;
+users[currentUser] -= value;
+bets[i] = (bets[i]||0) + value;
 
-addChipVisual(d,value);
+/* wizual */
+d.innerText = i + "\n(" + bets[i] + ")";
 
 updateBalance();
 });
@@ -60,7 +75,7 @@ table.appendChild(d);
 }
 }
 
-/* DRAG */
+/* 🪙 DRAG */
 function initDrag(){
 document.querySelectorAll(".chip").forEach(chip=>{
 chip.addEventListener("dragstart",(e)=>{
@@ -69,56 +84,31 @@ e.dataTransfer.setData("chip",chip.dataset.value);
 });
 }
 
-/* CHIP VISUAL */
-function addChipVisual(cell,value){
-let c=document.createElement("div");
-c.className="chip-on";
-c.innerText=value;
-
-cell.appendChild(c);
-}
-
-/* 🎡 SPIN — NAPRAWIONY */
+/* 🎡 SPIN */
 function spin(){
-let win=Math.floor(Math.random()*37);
+let win = Math.floor(Math.random()*37);
 
-let wheel=document.getElementById("wheel");
-let ball=document.getElementById("ball");
+let wheel = document.getElementById("wheel");
 
-let rotation=Math.random()*360 + 1440;
-
-wheel.style.transform="rotate("+rotation+"deg)";
-ball.style.transition="transform 4s ease-out";
-ball.style.transform="rotate("+(-rotation + win*9.7)+"deg)";
+/* animacja */
+wheel.style.transition="transform 2s";
+wheel.style.transform="rotate("+(Math.random()*720+720)+"deg)";
 
 setTimeout(()=>{
-let text="Wynik: "+win;
+
+let text = "Wynik: " + win;
 
 if(bets[win]){
-let winAmount=bets[win]*35;
-users[currentUser]+=winAmount;
-text+=" WYGRANA "+winAmount+" zł";
+let winAmount = bets[win]*35;
+users[currentUser] += winAmount;
+text += " WYGRANA " + winAmount + " zł";
 }
 
-document.getElementById("result").innerText=text;
+document.getElementById("result").innerText = text;
 
-bets={};
+bets = {};
 updateBalance();
 createTable();
 
-},4000);
-}
-
-/* NUMERY */
-function drawNumbers(){
-let nums=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
-
-let container=document.getElementById("numbers");
-container.innerHTML="";
-
-nums.forEach(n=>{
-let d=document.createElement("span");
-d.innerText=n+" ";
-container.appendChild(d);
-});
+},2000);
 }
