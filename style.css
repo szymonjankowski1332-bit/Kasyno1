@@ -365,3 +365,19 @@ top:120px;
 font-size:20px;
 transition:all 0.05s linear;
 }
+#aviatorBox{
+position:relative;
+width:300px;
+height:150px;
+background:#111;
+overflow:hidden;
+margin:auto;
+}
+
+#plane{
+position:absolute;
+left:0;
+top:120px;
+font-size:20px;
+pointer-events:none;
+}
