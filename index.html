@@ -2,14 +2,14 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Frecas Casino DEV</title>
+<title>Frecas Casino</title>
 
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>🎰 FRECAS CASINO DEV</header>
+<header>🎰 FRECAS CASINO</header>
 
 <!-- LOGIN -->
 <div id="login" class="screen active">
@@ -18,7 +18,7 @@
 </div>
 
 <!-- LOBBY -->
-<div id="lobby" class="screen">
+<div id="lobby" class="screen" style="display:none;">
 <div>Saldo: <span id="bal"></span> zł</div>
 
 <button onclick="openAdmin()">👑 Admin</button>
@@ -32,11 +32,11 @@
 </div>
 </div>
 
-<!-- GAME -->
-<div id="gameScreen" class="screen"></div>
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="screen" style="display:none;"></div>
 
-<!-- ADMIN -->
-<div id="admin" class="screen">
+<!-- ADMIN PANEL -->
+<div id="admin" class="screen" style="display:none;">
 <h2>👑 Panel Admina</h2>
 
 <input id="targetUser" placeholder="nick gracza">
