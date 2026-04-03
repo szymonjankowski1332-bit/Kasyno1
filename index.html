@@ -8,46 +8,57 @@
 
 <body>
 
-<header>🎰 FRECAS CASINO</header>
+<header style="text-align:center;font-size:28px;padding:15px;">
+🎰 FRECAS CASINO
+</header>
 
 <!-- LOGIN -->
-<div id="login" class="screen active">
+<div id="login" class="screen" style="display:block;text-align:center;">
 <input id="nick" placeholder="nick">
+<br><br>
 <button onclick="login()">Start</button>
 </div>
 
 <!-- LOBBY -->
-<div id="lobby" class="screen" style="display:none;">
-<div>Saldo: <span id="bal"></span> zł</div>
+<div id="lobby" class="screen" style="display:none;text-align:center;">
+<h2>Lobby</h2>
+
+<p>Saldo: <span id="bal"></span> zł</p>
 
 <button onclick="openAdmin()">👑 Admin</button>
 
-<div id="feed"></div>
+<div id="feed" style="margin:10px;"></div>
+
+<br>
 
 <div class="games">
-<div class="card" onclick="openGame('roulette')">🎡 Ruletka</div>
-<div class="card" onclick="openGame('slots')">🎰 Sloty</div>
-<div class="card" onclick="openGame('aviator')">✈️ Aviator</div>
-</div>
+<button onclick="openGame('roulette')">🎡 Ruletka</button>
+<button onclick="openGame('slots')">🎰 Sloty</button>
+<button onclick="openGame('aviator')">✈️ Aviator</button>
 </div>
 
-<!-- GAME -->
-<div id="gameScreen" class="screen" style="display:none;"></div>
+</div>
 
-<!-- ADMIN -->
-<div id="admin" class="screen" style="display:none;">
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="screen" style="display:none;text-align:center;"></div>
+
+<!-- ADMIN PANEL -->
+<div id="admin" class="screen" style="display:none;text-align:center;">
 <h2>👑 Panel Admina</h2>
 
 <input id="targetUser" placeholder="nick gracza">
+<br><br>
 <input id="amount" placeholder="kwota">
+<br><br>
 
 <button onclick="addMoney()">Dodaj kasę</button>
-<button onclick="show('lobby')">⬅️</button>
+<br><br>
+<button onclick="show('lobby')">⬅️ Powrót</button>
 
 <p id="adminMsg"></p>
 </div>
 
-<!-- SCRIPTS -->
+<!-- SCRIPTS (TYLKO RAZ!) -->
 <script src="app.js"></script>
 <script src="games/roulette.js"></script>
 <script src="games/slots.js"></script>
