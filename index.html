@@ -2,48 +2,28 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Frecas Casino</title>
+<title>Frecas Casino ULTRA</title>
 
 <style>
 body{
 margin:0;
 font-family:Segoe UI;
-background: radial-gradient(circle at top,#111,#000);
+background:#0b0b0b;
 color:white;
+text-align:center;
 }
 
 /* HEADER */
 header{
 padding:20px;
-text-align:center;
-font-size:30px;
+font-size:28px;
 color:gold;
-letter-spacing:3px;
-border-bottom:1px solid rgba(255,215,0,0.3);
+border-bottom:1px solid #333;
 }
 
 /* SCREENS */
 .screen{display:none;}
-.active{display:block;text-align:center;padding:20px;}
-
-/* INPUT */
-input{
-padding:12px;
-border-radius:10px;
-border:none;
-background:#111;
-color:white;
-}
-
-/* BUTTON */
-button{
-padding:12px 20px;
-border:none;
-border-radius:10px;
-background:linear-gradient(145deg,gold,#b89600);
-cursor:pointer;
-font-weight:bold;
-}
+.active{display:block;padding:20px;}
 
 /* LOBBY */
 .games{
@@ -51,99 +31,61 @@ display:flex;
 justify-content:center;
 gap:30px;
 flex-wrap:wrap;
-margin-top:40px;
 }
 
 .card{
-width:230px;
-padding:30px;
 background:#111;
+padding:25px;
 border-radius:15px;
+width:220px;
 cursor:pointer;
 transition:.3s;
-box-shadow:0 10px 30px rgba(0,0,0,.7);
 }
 
 .card:hover{
 transform:scale(1.05);
-box-shadow:0 0 30px gold;
+box-shadow:0 0 25px gold;
 }
 
-.balance{
-color:gold;
-margin:10px;
+/* BUTTON */
+button{
+padding:10px 15px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
 }
 
-/* ROULETTE */
-#wheel{
-width:260px;
-height:260px;
-border-radius:50%;
-margin:20px auto;
-background: conic-gradient(
-green 0 10deg,
-red 10deg 20deg,
-black 20deg 30deg,
-red 30deg 40deg,
-black 40deg 50deg,
-red 50deg 60deg,
-black 60deg 70deg,
-red 70deg 80deg,
-black 80deg 90deg,
-red 90deg 100deg,
-black 100deg 110deg,
-red 110deg 120deg,
-black 120deg 130deg,
-red 130deg 140deg,
-black 140deg 150deg,
-red 150deg 160deg,
-black 160deg 170deg,
-red 170deg 180deg,
-black 180deg 190deg,
-red 190deg 200deg,
-black 200deg 210deg,
-red 210deg 220deg,
-black 220deg 230deg,
-red 230deg 240deg,
-black 240deg 250deg,
-red 250deg 260deg,
-black 260deg 270deg,
-red 270deg 280deg,
-black 280deg 290deg,
-red 290deg 300deg,
-black 300deg 310deg,
-red 310deg 320deg,
-black 320deg 330deg,
-red 330deg 340deg,
-black 340deg 350deg,
-green 350deg 360deg
-);
-transition:transform 4s ease-out;
+/* BALANCE */
+.balance{color:gold;margin:10px;}
+
+/* ROULETTE TABLE */
+.grid{
+display:grid;
+grid-template-columns:repeat(12,50px);
+gap:5px;
+justify-content:center;
+margin-top:20px;
 }
 
-/* CHIPS */
-.chips button{
-margin:5px;
-border-radius:50%;
-width:50px;
-height:50px;
+.cell{
+padding:12px;
+border-radius:5px;
+cursor:pointer;
+font-size:12px;
 }
+
+.red{background:#a00;}
+.black{background:#111;border:1px solid #555;}
+.green{background:green;}
+
+.cell:hover{outline:2px solid gold;}
 
 /* SLOT */
 .slot{
-font-size:60px;
+font-size:50px;
 margin:20px;
-}
-
-/* FEED */
-.feed{
-position:fixed;
-right:10px;
-top:100px;
-background:#111;
-padding:10px;
-border-radius:10px;
-font-size:12px;
+transition:0.3s;
 }
 
 /* ADMIN */
@@ -155,14 +97,13 @@ left:50%;
 transform:translate(-50%,-50%);
 background:#111;
 padding:20px;
-border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>🎰 FRECAS CASINO</header>
+<header>🎰 FRECAS CASINO ULTRA</header>
 
 <div id="login" class="screen active">
 <input id="nick" placeholder="nick">
@@ -170,47 +111,34 @@ border-radius:10px;
 </div>
 
 <div id="lobby" class="screen">
-<div class="balance">Saldo: <span id="balance"></span> zł <button onclick="adminOpen()">⚙️</button></div>
+<div class="balance">Saldo: <span id="bal"></span> zł <button onclick="adminOpen()">⚙️</button></div>
 
 <div class="games">
 <div class="card" onclick="show('roulette')">🎡 Ruletka</div>
 <div class="card" onclick="show('slots')">🎰 Sloty</div>
-<div class="card" onclick="show('blackjack')">🃏 Blackjack</div>
 </div>
 </div>
 
+<!-- ROULETTE -->
 <div id="roulette" class="screen">
-<div id="wheel"></div>
+<h2>Ruletka</h2>
 
-<div class="chips">
-<button onclick="setBet(10)">10</button>
-<button onclick="setBet(50)">50</button>
-<button onclick="setBet(100)">100</button>
-</div>
+<div class="grid" id="table"></div>
 
-<p>Zakład: <span id="bet"></span></p>
+<p>Postawione: <span id="betInfo"></span></p>
 <button onclick="spin()">SPIN</button>
 <button onclick="back()">⬅️</button>
-<p id="res"></p>
+<p id="result"></p>
 </div>
 
+<!-- SLOT -->
 <div id="slots" class="screen">
 <div class="slot" id="slot">🍒 🍒 🍒</div>
-<button onclick="spinSlot()">SPIN</button>
+<button onclick="spinSlot()">SPIN (50)</button>
 <button onclick="back()">⬅️</button>
 </div>
 
-<div id="blackjack" class="screen">
-<div id="p"></div>
-<div id="d"></div>
-<button onclick="start()">Start</button>
-<button onclick="hit()">Hit</button>
-<button onclick="stand()">Stand</button>
-<button onclick="back()">⬅️</button>
-</div>
-
-<div class="feed" id="feed"></div>
-
+<!-- ADMIN -->
 <div id="admin">
 <input id="pass" placeholder="hasło"><br>
 <input id="user" placeholder="nick"><br>
@@ -220,67 +148,79 @@ border-radius:10px;
 
 <script>
 let users=JSON.parse(localStorage.getItem("users")||"{}");
-let u="",bet=0;
+let u="";
+let bets={};
 
+/* LOGIN */
 function login(){
 u=nick.value;
 if(!users[u]) users[u]=1000;
 show("lobby");update();
 }
 
+/* UI */
 function show(id){
 document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 }
 
 function back(){show("lobby");}
-function update(){balance.innerText=users[u];localStorage.setItem("users",JSON.stringify(users));}
+function update(){
+bal.innerText=users[u];
+localStorage.setItem("users",JSON.stringify(users));
+}
 
-/* ROULETTE */
-function setBet(x){bet=x;document.getElementById("bet").innerText=x;}
-function spin(){
-if(users[u]<bet)return;
-users[u]-=bet;
-let deg=Math.random()*360+720;
-wheel.style.transform="rotate("+deg+"deg)";
-setTimeout(()=>{
-if(Math.random()>0.5){users[u]+=bet*2;res.innerText="WIN";}
-else res.innerText="LOSE";
+/* ROULETTE TABLE GENERATE */
+let table=document.getElementById("table");
+for(let i=0;i<=36;i++){
+let d=document.createElement("div");
+d.innerText=i;
+d.className="cell "+(i==0?"green":(i%2?"red":"black"));
+d.onclick=()=>placeBet(i);
+table.appendChild(d);
+}
+
+function placeBet(n){
+if(users[u]<10)return alert("Brak kasy");
+users[u]-=10;
+bets[n]=(bets[n]||0)+10;
+betInfo.innerText=JSON.stringify(bets);
 update();
-},4000);
+}
+
+/* SPIN */
+function spin(){
+let win=Math.floor(Math.random()*37);
+result.innerText="Wynik: "+win;
+
+if(bets[win]){
+let winAmount=bets[win]*35;
+users[u]+=winAmount;
+result.innerText+=" WYGRANA "+winAmount+" zł";
+}
+
+bets={};
+betInfo.innerText="";
+update();
 }
 
 /* SLOT */
 function spinSlot(){
+if(users[u]<50)return;
 users[u]-=50;
+
 let s=["🍒","🍋","💎","7️⃣"];
+let interval=setInterval(()=>{
+slot.innerText=s[Math.random()*4|0]+" "+s[Math.random()*4|0]+" "+s[Math.random()*4|0];
+},100);
+
+setTimeout(()=>{
+clearInterval(interval);
 let r=[s[Math.random()*4|0],s[Math.random()*4|0],s[Math.random()*4|0]];
 slot.innerText=r.join(" ");
 if(r[0]==r[1]&&r[1]==r[2]) users[u]+=300;
 update();
-}
-
-/* BLACKJACK */
-let p=[],d=[];
-function draw(){return Math.floor(Math.random()*10)+1;}
-function sum(a){return a.reduce((x,y)=>x+y,0);}
-function start(){
-users[u]-=100;
-p=[draw(),draw()];
-d=[draw(),draw()];
-render();
-update();
-}
-function render(){
-pDiv.innerText="Ty: "+p.join(",")+" = "+sum(p);
-dDiv.innerText="Dealer: "+d[0]+", ?";
-}
-function hit(){p.push(draw());render();}
-function stand(){
-while(sum(d)<17)d.push(draw());
-dDiv.innerText="Dealer: "+d.join(",")+" = "+sum(d);
-if(sum(p)<=21&&(sum(p)>sum(d)||sum(d)>21)) users[u]+=200;
-update();
+},1000);
 }
 
 /* ADMIN */
@@ -292,13 +232,6 @@ users[user.value]+=parseInt(money.value);
 update();
 admin.style.display="none";
 }
-
-/* FEED */
-setInterval(()=>{
-let names=["Kuba","Anna","Mati","Player","Lucky"];
-feed.innerText=names[Math.random()*5|0]+" wygrał "+(Math.random()*5000|0)+" zł";
-},2000);
-
 </script>
 
 </body>
