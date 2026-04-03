@@ -3,7 +3,7 @@ let currentUser="";
 
 function login(){
 currentUser=document.getElementById("nick").value;
-if(!users[currentUser]) users[currentUser]=1000;
+if(!users[currentUser]) users[currentUser]=10;
 
 show("lobby");
 updateBalance();
