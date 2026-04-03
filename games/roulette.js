@@ -1,114 +1,124 @@
 function loadRoulette(){
-let el = document.getElementById("gameScreen");
+let el=document.getElementById("gameScreen");
 
-el.innerHTML = `
-<h2>🎡 Ruletka</h2>
+el.innerHTML=`
+<h2>🎡 Ruletka PRO</h2>
 
 <div>Saldo: <span id="bal"></span> zł</div>
 
-<!-- ŻETONY -->
-<div id="chips">
-<div class="chip" draggable="true" data-value="10">10</div>
-<div class="chip" draggable="true" data-value="50">50</div>
-<div class="chip" draggable="true" data-value="100">100</div>
+<div id="wheelBox">
+  <div id="wheel"></div>
+  <div id="ball">⚪</div>
 </div>
 
-<!-- KOŁO -->
-<div id="wheel" style="width:150px;height:150px;border:5px solid gold;border-radius:50%;margin:20px auto;"></div>
+<div id="table"></div>
 
-<!-- STÓŁ -->
-<div id="table" class="grid"></div>
-
+<p>Twój zakład: <span id="betVal">0</span> zł</p>
 <p id="result"></p>
 
-<button onclick="spin()">SPIN</button>
+<button onclick="spinRoulette()">SPIN</button>
 <button onclick="show('lobby')">⬅️</button>
 `;
 
 updateBalance();
 createTable();
-initDrag();
 }
 
-let bets = {};
+/* BET */
+let bets={};
+let totalBet=0;
 
-/* 🎯 STÓŁ */
+/* TABLE GRID */
 function createTable(){
-let table = document.getElementById("table");
-table.innerHTML = "";
+let table=document.getElementById("table");
+table.innerHTML="";
 
-for(let i=0;i<=36;i++){
-let d = document.createElement("div");
-d.innerText = i;
+let layout=[
+[3,6,9,12,15,18,21,24,27,30,33,36],
+[2,5,8,11,14,17,20,23,26,29,32,35],
+[1,4,7,10,13,16,19,22,25,28,31,34]
+];
 
-d.style.display="inline-block";
-d.style.width="40px";
-d.style.height="40px";
-d.style.margin="2px";
-d.style.lineHeight="40px";
-d.style.textAlign="center";
-d.style.border="1px solid white";
+layout.forEach(row=>{
+let rowDiv=document.createElement("div");
 
-d.style.background = i==0 ? "green" : (i%2 ? "red" : "black");
-d.style.color = "white";
+row.forEach(num=>{
+let d=document.createElement("div");
+d.className="cell "+(num%2?"red":"black");
+d.innerText=num;
 
-d.dataset.number = i;
+d.onclick=()=>placeBet(num,d);
 
-/* DROP */
-d.addEventListener("dragover",(e)=>e.preventDefault());
+rowDiv.appendChild(d);
+});
 
-d.addEventListener("drop",(e)=>{
-let value = parseInt(e.dataTransfer.getData("chip"));
+table.appendChild(rowDiv);
+});
 
-if(users[currentUser] < value) return;
+/* ZERO */
+let zero=document.createElement("div");
+zero.innerText="0";
+zero.className="cell green";
 
-users[currentUser] -= value;
-bets[i] = (bets[i]||0) + value;
+zero.onclick=()=>placeBet(0,zero);
 
-/* wizual */
-d.innerText = i + "\n(" + bets[i] + ")";
+table.prepend(zero);
+}
+
+/* PLACE BET */
+function placeBet(num,el){
+let bet=1;
+
+if(users[currentUser] < bet) return;
+
+users[currentUser]-=bet;
+totalBet+=bet;
+
+bets[num]=(bets[num]||0)+bet;
+
+el.style.boxShadow="0 0 10px gold";
+
+document.getElementById("betVal").innerText=totalBet;
 
 updateBalance();
-});
-
-table.appendChild(d);
-}
 }
 
-/* 🪙 DRAG */
-function initDrag(){
-document.querySelectorAll(".chip").forEach(chip=>{
-chip.addEventListener("dragstart",(e)=>{
-e.dataTransfer.setData("chip",chip.dataset.value);
-});
-});
-}
+/* SPIN */
+window.spinRoulette = function(){
 
-/* 🎡 SPIN */
-function spin(){
-let win = Math.floor(Math.random()*37);
+if(totalBet===0) return;
 
-let wheel = document.getElementById("wheel");
+let win=Math.floor(Math.random()*37);
 
-/* animacja */
-wheel.style.transition="transform 2s";
-wheel.style.transform="rotate("+(Math.random()*720+720)+"deg)";
+let wheel=document.getElementById("wheel");
+let ball=document.getElementById("ball");
+
+/* KOŁO */
+let rotation=1440 + Math.random()*360;
+wheel.style.transition="transform 4s ease-out";
+wheel.style.transform="rotate("+rotation+"deg)";
+
+/* KULKA */
+ball.style.transition="transform 4s ease-out";
+ball.style.transform="rotate("+(-rotation + win*9.7)+"deg)";
 
 setTimeout(()=>{
 
-let text = "Wynik: " + win;
+let text="Wynik: "+win;
 
 if(bets[win]){
-let winAmount = bets[win]*35;
-users[currentUser] += winAmount;
-text += " WYGRANA " + winAmount + " zł";
+let winAmount=bets[win]*35;
+users[currentUser]+=winAmount;
+text+=" WYGRANA "+winAmount+" zł";
 }
 
-document.getElementById("result").innerText = text;
+document.getElementById("result").innerText=text;
 
-bets = {};
+bets={};
+totalBet=0;
+
 updateBalance();
 createTable();
 
-},2000);
-}
+},4000);
+};
