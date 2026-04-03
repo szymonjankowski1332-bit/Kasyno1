@@ -99,3 +99,23 @@ feed.removeChild(feed.lastChild);
 }
 
 },3000);
+function renderBets(){
+return `
+<div class="bets">
+<button onclick="setBet(1)">1 zł</button>
+<button onclick="setBet(5)">5 zł</button>
+<button onclick="setBet(10)">10 zł</button>
+<button onclick="setBet(50)">50 zł</button>
+<button onclick="setBet(100)">100 zł</button>
+<button onclick="setBet(500)">500 zł</button>
+<button onclick="setBet(1000)">1000 zł</button>
+</div>
+
+<p>Bet: <b id="betValue">${currentBet}</b> zł</p>
+`;
+}
+
+function setBet(val){
+currentBet = val;
+document.getElementById("betValue").innerText = val;
+}
