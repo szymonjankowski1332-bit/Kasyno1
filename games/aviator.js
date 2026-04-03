@@ -68,8 +68,13 @@ ctx.lineTo(x,150-(m*20));
 ctx.stroke();
 
 /* ✈️ SAMOLOT */
+let posY = 150 - (m*20);
+
+/* LIMIT żeby nie znikał */
+if(posY < 10) posY = 10;
+
 plane.style.left = x + "px";
-plane.style.top = (150 - (m*20)) + "px";
+plane.style.top = posY + "px";
 
 /* MULTI */
 document.getElementById("multi").innerText=m.toFixed(2);
