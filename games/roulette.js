@@ -2,22 +2,16 @@ function loadRoulette(){
 let el=document.getElementById("gameScreen");
 
 el.innerHTML=`
-<h2>🎡 Ruletka PRO+</h2>
+<h2>🎡 Ruletka</h2>
 
 <div>Saldo: <span id="bal"></span> zł</div>
-
-<h3>Przeciągnij żeton:</h3>
-
-<div id="chips">
-<div class="chip" draggable="true" data-value="10">10</div>
-<div class="chip" draggable="true" data-value="50">50</div>
-<div class="chip" draggable="true" data-value="100">100</div>
-</div>
 
 <div id="wheel-container">
   <div id="wheel"></div>
   <div id="ball"></div>
 </div>
+
+<div id="numbers"></div>
 
 <div id="table" class="grid"></div>
 
@@ -30,7 +24,10 @@ el.innerHTML=`
 updateBalance();
 createTable();
 initDrag();
+drawNumbers();
 }
+
+/* RESZTA FUNKCJI MUSI BYĆ TEŻ */
 
 let bets={};
 
