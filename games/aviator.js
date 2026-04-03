@@ -18,10 +18,17 @@ el.innerHTML=`
 updateBalance();
 }
 
-let ctx, m=1, running=false, crashPoint=0;
+let ctx, m=1, running=false, crashPoint=0, gameLoop;
 
-function startAviator(){
-if(users[currentUser] < 50) return;
+/* ✅ GLOBAL */
+window.startAviator = function(){
+
+if(running) return;
+
+if(users[currentUser] < 50){
+alert("Za mało kasy");
+return;
+}
 
 users[currentUser]-=50;
 updateBalance();
@@ -37,15 +44,17 @@ ctx.clearRect(0,0,300,150);
 
 let x=0;
 
-let game=setInterval(()=>{
+gameLoop = setInterval(()=>{
 
 ctx.lineWidth=2;
 ctx.strokeStyle="lime";
 
 ctx.beginPath();
 ctx.moveTo(x,150-(m*20));
+
 x+=3;
 m+=0.03;
+
 ctx.lineTo(x,150-(m*20));
 ctx.stroke();
 
@@ -53,23 +62,26 @@ document.getElementById("multi").innerText=m.toFixed(2);
 
 if(m >= crashPoint){
 running=false;
-clearInterval(game);
+clearInterval(gameLoop);
 
 document.getElementById("multi").innerText="CRASH 💥";
 }
 
 },50);
-}
+};
 
-function cashout(){
+/* ✅ GLOBAL */
+window.cashout = function(){
+
 if(!running) return;
 
 let win = 50 * m;
 users[currentUser]+=Math.floor(win);
 
 running=false;
+clearInterval(gameLoop);
 
 document.getElementById("multi").innerText="WYPŁATA 💰";
 
 updateBalance();
-}
+};
