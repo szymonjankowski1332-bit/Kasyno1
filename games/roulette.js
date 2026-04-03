@@ -2,6 +2,7 @@ function loadRoulette(){
 let el=document.getElementById("gameScreen");
 
 el.innerHTML=`
+${renderBets()}
 <h2>🎡 Ruletka ULTRA</h2>
 
 <div>Saldo: <span id="bal"></span> zł</div>
