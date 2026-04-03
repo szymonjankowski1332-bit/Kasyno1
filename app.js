@@ -70,3 +70,14 @@ feed.removeChild(feed.lastChild);
 }
 
 },3000);
+<div id="admin" class="screen">
+<h2>👑 Panel Admina</h2>
+
+<input id="targetUser" placeholder="nick gracza">
+<input id="amount" placeholder="kwota">
+
+<button onclick="addMoney()">Dodaj kasę</button>
+<button onclick="show('lobby')">⬅️</button>
+
+<p id="adminMsg"></p>
+</div>
