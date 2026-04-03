@@ -1,3 +1,4 @@
+let currentBet = 1;
 alert("APP DZIAŁA");
 
 let users = JSON.parse(localStorage.getItem("users") || "{}");
