@@ -77,6 +77,8 @@ x+=3;
 m+=0.03;
 
 ctx.lineTo(x,150-(m*20));
+plane.style.left = x + "px";
+plane.style.top = (150 - (m*20)) + "px";
 ctx.stroke();
 
 document.getElementById("multi").innerText=m.toFixed(2);
