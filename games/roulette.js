@@ -14,7 +14,10 @@ el.innerHTML=`
 <div class="chip" draggable="true" data-value="100">100</div>
 </div>
 
-<div id="wheel"></div>
+<div id="wheel-container">
+  <div id="wheel"></div>
+  <div id="ball"></div>
+</div>
 
 <div id="table" class="grid"></div>
 
