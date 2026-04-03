@@ -59,12 +59,12 @@ ctx.lineWidth=2;
 ctx.strokeStyle="lime";
 
 ctx.beginPath();
-ctx.moveTo(x,150-(m*20));
+ctx.moveTo(x,300-(m*40));
 
 x+=3;
 m+=0.03;
 
-ctx.lineTo(x,150-(m*20));
+ctx.lineTo(x,300-(m*40));
 ctx.stroke();
 
 /* ✈️ SAMOLOT */
