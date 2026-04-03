@@ -48,7 +48,7 @@ m=1;
 running=true;
 crashPoint = 1 + Math.random()*5;
 
-ctx.clearRect(0,0,300,150);
+ctx.clearRect(0,0,600,300);
 
 let x=0;
 
