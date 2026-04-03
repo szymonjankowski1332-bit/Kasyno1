@@ -81,3 +81,4 @@ feed.removeChild(feed.lastChild);
 
 <p id="adminMsg"></p>
 </div>
+if(name==="roulette") loadRoulette();
